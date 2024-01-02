@@ -12,4 +12,5 @@ class Message
 		std::string		messageNotifier();
 		Message(std::string msg);
 		~Message();
+		const std::string &getMessage();
 };

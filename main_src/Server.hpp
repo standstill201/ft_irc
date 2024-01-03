@@ -1,39 +1,29 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <string.h>
+#include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
-#include <iostream>
-#include <poll.h>
+#include <fcntl.h>
+#include <sys/event.h>
+#include <map>
+#include <vector>
 #include <unistd.h>
-
-#include "../sub_src/Error.hpp"
-
-#define PORT 6667
-#define CONNECT_MAX 512
-#define BUFFER_SIZE 512
 
 class Server
 {
 	private:
-		int					server_fd;
-		int					send_size;
-
-		void				Server::connectNewClient(int i);
-		void				Server::operServer();
-
-
-
-		struct	sockaddr_in	host_addr;
-		struct	sockaddr_in	client_addr;
-
-		struct	pollfd		pollfds[CONNECT_MAX];
+		int serverSocket;
+		int kq;
+		std::map<int, std::string> clients;
+		std::vector<struct kevent> changeList;
+		struct kevent eventList[8];
 	public:
-		Server();
-		~Server();
-		void	runServer();
+		Server(int port);
+		void runServer();
+		void changeEvents(std::vector<struct kevent>& changeList, uintptr_t ident, int16_t filter,
+					uint16_t flags, uint32_t fflags, intptr_t data, void *udata);
+		void disconnect_client(int client_fd, std::map<int, std::string>& clients);
 };
 
 #endif

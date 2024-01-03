@@ -1,17 +1,12 @@
 #include "./main_src/Server.hpp"
 
-int main(void)
+int main(int ac, char *av[])
 {
-	try
+	if (ac != 2)
 	{
-		Server	server;
-
-		server.runServer();
+		std::cout << "arguments error" << std::endl;
+		return (1);
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	Server	server(atoi(av[1]));
+	server.runServer();
 }
-
-// 
